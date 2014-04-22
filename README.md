@@ -11,5 +11,5 @@ eMails:
 Pablo: pablo.martin.najera@gmail.com
 David: da17mo@gmail.com
 Ramon: ramoncqq@gmail.com
-Denis: deniml1994@gmail.com
-Borjita: ¿?
+Denís: deniml1994@gmail.com
+Borjita: borjamoreno23@gmail.com
