@@ -1,4 +1,4 @@
-/*Inicio del código*/
+/*Inicio del código*/    /*Mirar esta página sin falta http://playground.arduino.cc/Main/LedControl */
 
 #include <avr/interrupt.h>
 #include <string.h>
@@ -19,7 +19,8 @@ void setup()
     pinMode(i, OUTPUT);
   
   DDRC = 0xff;
-  PORTC = 0x00;
+  PORTC = 0x00;     // 0x00 --> 00000000
+  		    // 0xff --> 11111111
   
   TCCR2A = 0x00;
   TCCR2B = 0x00;
@@ -33,10 +34,12 @@ void setup()
   	<< deplazamiento a la izquierda, se le añade un cero al final de la cadena, desplazando el 
   	     bit que está a la izquierda.
   	     
+  	~ complemento a 1, buscar que es.
+  	     
   	     
   */
 		
-  TCCR2A |= (0x01 << WGM21);
+  TCCR2A |= (0x01 << WGM21);  // 0x01 --> 00000001
   OCR2A = 10;
   TCNT2 = 0x00;
   TCCR2B |= (0x01 << CS22) | (0x01 << CS21);
@@ -55,18 +58,26 @@ void setup()
 
 ISR (TIMER2_COMPA_vect) 
 {
+  // http://arduino.cc/es/Reference/Board   --> Esquema de Arduino uno
+  
+  //PORTB --> pines digitales del 8 al 13    |     Creo que es así pero no estoy seguro
+  //PORTC --> entradas analógicas            |-->  son de los chips udsados en las placas de arduino
+  //PORTD --> pines digitales del 0 al 7     |      ATmega8 y el ATmega168 (creo que son los chips y no placas)
+  
+  //  Los registros de PORT permiten manipular los pines del microcontrolador de la placa Arduino em bajo nivel 
+  //  y demanera más rapida
   
   // todas las capas seleccinadas apagadas
   PORTC = 0x00;
-  PORTB &= 0x0f;
+  PORTB &= 0x0f;  // 0x0f --> 00001111
   
-  PORTB |= 0x08; // salida habilitada off.
+  PORTB |= 0x08; // salida habilitada off. // 0x08 --> 0000100
   
   for (int i=0; i<8; i++)
   {
     PORTD = cubo[capaActual][i];
-    PORTB = (PORTB & 0xF8) | (0x07 & (i+1));
-  }
+    PORTB = (PORTB & 0xF8) | (0x07 & (i+1)); // 0xF8 --> 11111000
+  }                                          // 0x07 --> 00000111
   
   PORTB &= 0b00110111; // Salida habilitada on.
   
@@ -93,7 +104,6 @@ ISR (TIMER2_COMPA_vect)
 
 void loop()
 {
-  int i,x,y,z;//sobraría, pero comprobar
   
   while (true)//también sobraría, creo, pero comprobar con el cubo
   {
@@ -123,7 +133,7 @@ void lluvia (int veces)
 			setvoxel(rnd_x,rnd_y,7);
 		}
 		
-		delay_ms(1000);/en vez de usar su función de delay_ms, se puede usar la predeterminada de delay();
+		delay_ms(1000); //en vez de usar su función de delay_ms, se puede usar la predeterminada de delay();
 		mueve(eje_Z,-1);
 	}
 }
